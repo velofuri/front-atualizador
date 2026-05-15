@@ -79,6 +79,7 @@ export default function FormPage() {
       await uploadArquivo(arquivo)
 
       setArquivo(null)
+      alert("Arquivo enviado com sucesso.")
     } catch (error) {
       console.error(error)
 
@@ -157,7 +158,7 @@ export default function FormPage() {
                 id="arquivo"
                 type="file"
                 accept=".zip"
-                disabled={enviando} // Desativa o input durante o envio
+                disabled={enviando}
                 onChange={(e) => setArquivo(e.target.files?.[0] ?? null)}
               />
             </div>

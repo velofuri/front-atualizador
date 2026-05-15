@@ -1,6 +1,5 @@
 import { env } from "@/lib/env"
 import type { FormValues } from "@/pages/form"
-import { ar } from "zod/v4/locales"
 
 const api_url = env.VITE_API_URL
 
