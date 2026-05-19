@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card"
 import { useState } from "react"
 import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 const formSchema = z.object({
   sigla: z.string().min(1, "Sigla é obrigatória").max(3, "Máximo 3 caracteres"),
@@ -33,6 +34,7 @@ export type FormValues = z.infer<typeof formSchema>
 export default function FormPage() {
   const [arquivo, setArquivo] = useState<File | null>(null)
   const [enviando, setEnviando] = useState(false)
+  const [loading, setLoading] = useState(false)
   const {
     register,
     handleSubmit,
@@ -50,13 +52,15 @@ export default function FormPage() {
 
   const onSubmitCadastro = async (values: FormValues) => {
     try {
+      setLoading(true)
       await createRecord(values)
-      alert("Registro criado com sucesso!")
+      toast.success("Registro criado com sucesso!")
     } catch (error) {
       const message = error instanceof Error ? error.message : "Erro inesperado"
-      alert(`Erro: ${message}`)
+      toast.error(`Erro: ${message}`)
     } finally {
       reset()
+      setLoading(false)
     }
   }
 
@@ -64,7 +68,7 @@ export default function FormPage() {
     event.preventDefault()
 
     if (!arquivo) {
-      alert("Selecione um arquivo")
+      toast.warning("Selecione um arquivo")
       return
     }
 
@@ -74,11 +78,11 @@ export default function FormPage() {
       await uploadArquivo(arquivo)
 
       setArquivo(null)
-      alert("Arquivo enviado com sucesso.")
+      toast.success("Arquivo enviado com sucesso.")
     } catch (error) {
       console.error(error)
 
-      alert("Erro ao enviar arquivo")
+      toast.error("Erro ao enviar arquivo")
     } finally {
       setEnviando(false)
     }
@@ -128,7 +132,14 @@ export default function FormPage() {
             </Field>
 
             <Button type="submit" className="w-full">
-              Salvar
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Salvando
+                </>
+              ) : (
+                "Salvar"
+              )}
             </Button>
           </form>
         </CardContent>

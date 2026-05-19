@@ -4,9 +4,11 @@ import MainLayout from "./components/mainLayout"
 import FormPage from "./pages/form"
 import RecordsPage from "./pages/record"
 import { RequireAuth } from "./components/requiredAuth"
+import { Toaster } from "./components/ui/sonner"
 export function App() {
   return (
     <BrowserRouter>
+      <Toaster richColors position="top-center" />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route

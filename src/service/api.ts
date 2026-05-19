@@ -1,5 +1,6 @@
 import { env } from "@/lib/env"
 import type { FormValues } from "@/pages/form"
+import type { ApiResponse, FetchRecords } from "@/types/records"
 
 const api_url = env.VITE_API_URL
 
@@ -22,12 +23,21 @@ export async function createRecord(payload: FormValues) {
   return data
 }
 
-export async function fetchRecords(sigla?: string) {
+export async function fetchRecords({
+  sigla,
+  page,
+  limit,
+}: FetchRecords): Promise<ApiResponse> {
   const trimmed = sigla?.trim()
 
-  const url = trimmed
-    ? `${api_url}/records/${encodeURIComponent(trimmed)}`
-    : `${api_url}/update`
+  const params = new URLSearchParams()
+  params.set("page", String(page))
+  params.set("limit", String(limit))
+  if (trimmed) {
+    params.set("acronym", trimmed)
+  }
+
+  const url = `${api_url}/update?${params.toString()}`
 
   const response = await fetch(url, {
     method: "GET",

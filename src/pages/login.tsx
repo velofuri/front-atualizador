@@ -2,6 +2,7 @@ import { LoginForm } from "@/components/login-form"
 import { isAuthenticated, login } from "@/service/auth"
 import { useEffect, useState } from "react"
 import { Navigate, useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -33,7 +34,7 @@ export default function LoginPage() {
       await login(user, password)
       navigate("/records")
     } catch (error) {
-      alert("Falha na autenticação " + error)
+      toast.error("Falha na autenticação " + error)
     }
   }
 
