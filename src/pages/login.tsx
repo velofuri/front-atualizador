@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/login-form"
+import { LoginForm } from "@/components/loginForm"
 import { isAuthenticated, login } from "@/service/auth"
 import { useEffect, useState } from "react"
 import { Navigate, useNavigate } from "react-router-dom"
