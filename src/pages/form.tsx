@@ -150,7 +150,7 @@ export default function FormPage() {
               <FieldError>{errors.versao?.message}</FieldError>
             </Field>
 
-            <Field>
+            {/* <Field>
               <FieldLabel htmlFor="datahora">Data e Hora</FieldLabel>
               <Input
                 id="datahora"
@@ -158,7 +158,7 @@ export default function FormPage() {
                 {...register("datahora")}
               />
               <FieldError>{errors.datahora?.message}</FieldError>
-            </Field>
+            </Field> */}
 
             <Button type="submit" className="w-full">
               {loading ? (
