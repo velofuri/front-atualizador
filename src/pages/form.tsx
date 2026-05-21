@@ -4,7 +4,7 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Field, FieldLabel, FieldError } from "@/components/ui/field"
-import { createRecord, uploadArquivo } from "@/service/api"
+import { createRecord, getFileList, uploadArquivo } from "@/service/api"
 import {
   Card,
   CardContent,
@@ -12,9 +12,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const formSchema = z.object({
   sigla: z.string().min(1, "Sigla é obrigatória").max(3, "Máximo 3 caracteres"),
@@ -35,6 +42,8 @@ export default function FormPage() {
   const [arquivo, setArquivo] = useState<File | null>(null)
   const [enviando, setEnviando] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [version, setVersion] = useState<string[]>([])
+
   const {
     register,
     handleSubmit,
@@ -49,6 +58,14 @@ export default function FormPage() {
       datahora: new Date().toISOString().slice(0, 16),
     },
   })
+
+  useEffect(() => {
+    async function loadVersions() {
+      const response = await getFileList()
+      setVersion(response)
+    }
+    loadVersions()
+  }, [])
 
   const onSubmitCadastro = async (values: FormValues) => {
     try {
@@ -92,7 +109,7 @@ export default function FormPage() {
     <div className="flex justify-center gap-2 p-6">
       <Card className="min-w-2xs">
         <CardHeader>
-          <CardTitle>Cadastro</CardTitle>
+          <CardTitle>Registrar</CardTitle>
           <CardDescription>
             Preencha os dados abaixo para salvar o registro.
           </CardDescription>
@@ -117,7 +134,19 @@ export default function FormPage() {
 
             <Field>
               <FieldLabel htmlFor="versao">Versão</FieldLabel>
-              <Input id="versao" {...register("versao")} />
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione uma versão" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {version.map((version) => (
+                    <SelectItem key={version} value={version}>
+                      {version}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FieldError>{errors.versao?.message}</FieldError>
             </Field>
 

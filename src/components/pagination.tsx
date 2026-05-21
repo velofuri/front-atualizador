@@ -39,7 +39,7 @@ export function PaginationControls({
           onLimitChange(Number(value))
         }}
       >
-        <SelectTrigger className="w-20">
+        <SelectTrigger className="w-18">
           <SelectValue placeholder="Limite" />
         </SelectTrigger>
         <SelectContent>
