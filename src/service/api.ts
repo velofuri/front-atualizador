@@ -72,3 +72,17 @@ export async function uploadArquivo(arquivo: File) {
 
   return await response.json()
 }
+
+export async function getFileList() {
+  const response = await fetch(`${api_url}/files`, {
+    method: "GET",
+    credentials: "include",
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}))
+    throw new Error(error?.message ?? `Erro HTTP ${response.status}`)
+  }
+
+  return await response.json()
+}

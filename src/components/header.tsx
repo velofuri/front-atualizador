@@ -6,7 +6,7 @@ export function Header() {
   const location = useLocation()
 
   const navItems = [
-    { label: "Cadastrar", path: "/form" },
+    { label: "Registrar", path: "/form" },
     { label: "Registros", path: "/records" },
   ]
 
