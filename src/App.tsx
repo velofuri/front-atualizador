@@ -5,26 +5,30 @@ import FormPage from "./pages/form"
 import RecordsPage from "./pages/record"
 import { RequireAuth } from "./components/requiredAuth"
 import { Toaster } from "./components/ui/sonner"
+import { QueryClientProvider } from "@tanstack/react-query"
+import { queryClient } from "./lib/reactQuery"
 export function App() {
   return (
-    <BrowserRouter>
-      <Toaster richColors position="top-center" />
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <MainLayout />
-            </RequireAuth>
-          }
-        >
-          <Route index element={<Navigate to="/records" replace />} />
-          <Route path="/form" element={<FormPage />} />
-          <Route path="/records" element={<RecordsPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Toaster richColors position="top-center" />
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/"
+            element={
+              <RequireAuth>
+                <MainLayout />
+              </RequireAuth>
+            }
+          >
+            <Route index element={<Navigate to="/records" replace />} />
+            <Route path="/form" element={<FormPage />} />
+            <Route path="/records" element={<RecordsPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   )
 }
 

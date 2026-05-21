@@ -1,50 +1,31 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { fetchRecords } from "@/service/api"
-
 import { Loader2 } from "lucide-react"
-
-import type { RecordsType } from "@/types/records"
-import { toast } from "sonner"
 import { PaginationControls } from "@/components/pagination"
 import RecordsDataTable from "@/components/recordsDatatable"
+import { useGetRecords } from "@/hooks/useData"
 
 export default function RecordsPage() {
   const [sigla, setSigla] = useState("")
-  const [resultados, setResultados] = useState<RecordsType[]>([])
+  const [siglaInput, setSiglaInput] = useState("")
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
-  const [totalPages, setTotalPages] = useState(1)
-  const [loading, setLoading] = useState(false)
+  const { data: resultados, isLoading: loading } = useGetRecords({
+    sigla,
+    page,
+    limit,
+  })
 
-  useEffect(() => {
-    handleBuscar()
-  }, [page, limit])
-
-  const handleBuscar = async () => {
-    setLoading(true)
-    try {
-      const records = await fetchRecords({ sigla, limit, page })
-      setResultados(records.data)
-      setTotalPages(records.meta.totalPages)
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro desconhecido")
-      setResultados([])
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    if (!loading) {
-      handleBuscar()
-    }
+    setPage(1)
+    setSigla(siglaInput)
   }
 
-  const handlePageChange = (page: number) => {
+  function handlePageChange(page: number) {
+    const totalPages = resultados?.meta.totalPages ?? 1
     if (page >= 1 && page <= totalPages) {
       setPage(page)
     }
@@ -61,8 +42,8 @@ export default function RecordsPage() {
         >
           <Input
             placeholder="Digite a sigla"
-            value={sigla}
-            onChange={(e) => setSigla(e.target.value)}
+            value={siglaInput}
+            onChange={(e) => setSiglaInput(e.target.value)}
             className="flex-1"
             maxLength={3}
           />
@@ -78,11 +59,11 @@ export default function RecordsPage() {
           </Button>
         </form>
 
-        <RecordsDataTable records={resultados} />
+        <RecordsDataTable records={resultados?.data ?? []} />
       </div>
       <PaginationControls
         page={page}
-        totalPages={totalPages}
+        totalPages={resultados?.meta.totalPages ?? 1}
         limit={limit}
         onPageChange={handlePageChange}
         onLimitChange={(newLimit) => {

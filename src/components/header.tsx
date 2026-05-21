@@ -1,9 +1,10 @@
 import { Link, useLocation } from "react-router-dom"
 import { Button } from "./ui/button"
-import { logout } from "@/service/auth"
+import { useLogoutMutate } from "@/hooks/useMutate"
 
 export function Header() {
   const location = useLocation()
+  const { mutate } = useLogoutMutate()
 
   const navItems = [
     { label: "Registrar", path: "/form" },
@@ -36,7 +37,7 @@ export function Header() {
               <Button
                 variant="destructive"
                 className="px-4"
-                onClick={() => logout()}
+                onClick={() => mutate()}
               >
                 Sair
               </Button>

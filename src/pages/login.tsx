@@ -1,47 +1,41 @@
 import { LoginForm } from "@/components/loginForm"
-import { isAuthenticated, login } from "@/service/auth"
-import { useEffect, useState } from "react"
+import { useAuthenticated } from "@/hooks/useData"
+import { useLoginMutate } from "@/hooks/useMutate"
+import { Loader } from "lucide-react"
 import { Navigate, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [authenticated, setAuthenticated] = useState<boolean | undefined>(
-    undefined
-  )
+  const { data: authenticated, isLoading } = useAuthenticated()
+  const { mutate, isPending } = useLoginMutate()
 
-  useEffect(() => {
-    async function checkAuth() {
-      const result = await isAuthenticated()
-      setAuthenticated(result)
-    }
-    checkAuth()
-  }, [])
+  if (isLoading) {
+    return <Loader />
+  }
 
-  if (authenticated === undefined) return null
   if (authenticated) {
     return <Navigate to="/records" replace />
   }
 
-  const handleLogin = async ({
-    user,
-    password,
-  }: {
-    user: string
-    password: string
-  }) => {
-    try {
-      await login(user, password)
-      navigate("/records")
-    } catch (error) {
-      toast.error("Falha na autenticação " + error)
-    }
+  function handleLogin({ user, password }: { user: string; password: string }) {
+    mutate(
+      { user, password },
+      {
+        onSuccess: () => {
+          navigate("/records")
+        },
+        onError: (error) => {
+          toast.error("Falha na autenticação " + error.message)
+        },
+      }
+    )
   }
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
       <div className="w-full max-w-sm md:max-w-4xl">
-        <LoginForm onSubmit={handleLogin} />
+        <LoginForm onSubmit={handleLogin} isPending={isPending} />
       </div>
     </div>
   )

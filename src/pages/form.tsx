@@ -1,10 +1,9 @@
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Field, FieldLabel, FieldError } from "@/components/ui/field"
-import { createRecord, getFileList, uploadArquivo } from "@/service/api"
 import {
   Card,
   CardContent,
@@ -12,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { useEffect, useState } from "react"
+import { useRef, useState } from "react"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import {
@@ -22,6 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useFileListData } from "@/hooks/useData"
+import { useRegisterMutate, useUploadFileMutate } from "@/hooks/useMutate"
 
 const formSchema = z.object({
   sigla: z.string().min(1, "Sigla é obrigatória").max(3, "Máximo 3 caracteres"),
@@ -39,15 +40,18 @@ const formSchema = z.object({
 export type FormValues = z.infer<typeof formSchema>
 
 export default function FormPage() {
+  const { mutate: registerMutate, isPending: loading } = useRegisterMutate()
+  const { mutate: uploadFileMutate, isPending: enviando } =
+    useUploadFileMutate()
+  const { data: version = [] } = useFileListData()
   const [arquivo, setArquivo] = useState<File | null>(null)
-  const [enviando, setEnviando] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [version, setVersion] = useState<string[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -59,26 +63,16 @@ export default function FormPage() {
     },
   })
 
-  useEffect(() => {
-    async function loadVersions() {
-      const response = await getFileList()
-      setVersion(response)
-    }
-    loadVersions()
-  }, [])
-
-  const onSubmitCadastro = async (values: FormValues) => {
-    try {
-      setLoading(true)
-      await createRecord(values)
-      toast.success("Registro criado com sucesso!")
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Erro inesperado"
-      toast.error(`Erro: ${message}`)
-    } finally {
-      reset()
-      setLoading(false)
-    }
+  function onSubmitCadastro(values: FormValues) {
+    registerMutate(values, {
+      onSuccess: () => {
+        reset()
+        toast.success("Registro salvo com sucesso!")
+      },
+      onError: () => {
+        toast.error("Falho ao registrar")
+      },
+    })
   }
 
   async function enviarArquivo(event: React.FormEvent) {
@@ -89,20 +83,18 @@ export default function FormPage() {
       return
     }
 
-    try {
-      setEnviando(true)
-
-      await uploadArquivo(arquivo)
-
-      setArquivo(null)
-      toast.success("Arquivo enviado com sucesso.")
-    } catch (error) {
-      console.error(error)
-
-      toast.error("Erro ao enviar arquivo")
-    } finally {
-      setEnviando(false)
-    }
+    uploadFileMutate(arquivo, {
+      onSuccess: () => {
+        setArquivo(null)
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ""
+        }
+        toast.success("Arquivo enviado com sucesso.")
+      },
+      onError: () => {
+        toast.error("Erro ao enviar arquivo")
+      },
+    })
   }
 
   return (
@@ -134,19 +126,26 @@ export default function FormPage() {
 
             <Field>
               <FieldLabel htmlFor="versao">Versão</FieldLabel>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma versão" />
-                </SelectTrigger>
+              <Controller
+                name="versao"
+                control={control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger id="versao">
+                      <SelectValue placeholder="Selecione uma versão" />
+                    </SelectTrigger>
 
-                <SelectContent>
-                  {version.map((version) => (
-                    <SelectItem key={version} value={version}>
-                      {version}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <SelectContent>
+                      {version.map((v) => (
+                        <SelectItem key={v} value={v}>
+                          {v}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+
               <FieldError>{errors.versao?.message}</FieldError>
             </Field>
 
@@ -192,6 +191,7 @@ export default function FormPage() {
               <Input
                 id="arquivo"
                 type="file"
+                ref={fileInputRef}
                 accept=".zip"
                 disabled={enviando}
                 onChange={(e) => setArquivo(e.target.files?.[0] ?? null)}

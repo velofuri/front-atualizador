@@ -7,9 +7,15 @@ import { useState } from "react"
 
 interface LoginFormProps extends Omit<React.ComponentProps<"div">, "onSubmit"> {
   onSubmit: (credentials: { user: string; password: string }) => void
+  isPending: boolean
 }
 
-export function LoginForm({ className, onSubmit, ...props }: LoginFormProps) {
+export function LoginForm({
+  className,
+  onSubmit,
+  isPending,
+  ...props
+}: LoginFormProps) {
   const [user, setUser] = useState("")
   const [password, setPassword] = useState("")
   return (
@@ -57,7 +63,9 @@ export function LoginForm({ className, onSubmit, ...props }: LoginFormProps) {
                 />
               </Field>
               <Field>
-                <Button type="submit">Entrar</Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? "Entrando..." : "Entrar"}
+                </Button>
               </Field>
             </FieldGroup>
           </form>
