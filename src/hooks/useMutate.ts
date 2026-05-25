@@ -2,6 +2,7 @@ import { queryClient } from "@/lib/reactQuery"
 import { createRecord, uploadArquivo } from "@/service/api"
 import { changePassword, login, logout } from "@/service/auth"
 import { useMutation } from "@tanstack/react-query"
+import { useNavigate } from "react-router-dom"
 
 export function useRegisterMutate() {
   const mutate = useMutation({
@@ -35,12 +36,14 @@ export function useLoginMutate() {
 }
 
 export function useLogoutMutate() {
+  const navigate = useNavigate()
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["authenticated"],
       })
+      navigate("/login")
     },
   })
 }

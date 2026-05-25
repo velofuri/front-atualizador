@@ -8,8 +8,6 @@ import {
 } from "../ui/dropdown-menu"
 import { useLogoutMutate } from "@/hooks/useMutate"
 import { useState } from "react"
-import { Link } from "react-router-dom"
-import { Button } from "../ui/button"
 import { ChangePasswordDialog } from "./changePassword"
 import { capitalize } from "@/lib/captalize"
 
@@ -39,16 +37,11 @@ export function HeaderDropDown() {
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem>
-                <Link to="/login">
-                  <Button
-                    variant="ghost"
-                    className="max-h-1 text-red-500"
-                    onClick={() => mutate()}
-                  >
-                    Sair
-                  </Button>
-                </Link>
+              <DropdownMenuItem
+                className="cursor-pointer text-red-500"
+                onClick={() => mutate()}
+              >
+                Sair
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
