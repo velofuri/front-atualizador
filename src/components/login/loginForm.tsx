@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
+import logoLacteus from "../../assets/lacteus.png"
 
 interface LoginFormProps extends Omit<React.ComponentProps<"div">, "onSubmit"> {
   onSubmit: (credentials: { user: string; password: string }) => void
@@ -71,8 +72,8 @@ export function LoginForm({
           </form>
           <div className="relative hidden bg-muted md:block">
             <img
-              src="/src/assets/lacteus.png"
-              alt="Image"
+              src={logoLacteus}
+              alt="Lacteus"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.8]"
             />
           </div>
