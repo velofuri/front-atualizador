@@ -16,27 +16,17 @@ import {
 
 import { useChangePassword } from "@/hooks/useMutate"
 import { toast } from "sonner"
-import { z } from "zod"
 import { Loader2 } from "lucide-react"
-
-export const changePasswordSchema = z
-  .object({
-    password: z.string().min(6, "A senha deve possuir pelo menos 6 caracteres"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "As senhas não conferem",
-    path: ["confirmPassword"],
-  })
-
-export type ChangePasswordFormData = z.infer<typeof changePasswordSchema>
+import {
+  changePasswordSchema,
+  type ChangePasswordFormData,
+} from "@/types/changePassword"
 
 type ChangePasswordDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-// Renomeado a função para refletir o uso do Dialog
 export function ChangePasswordDialog({
   open,
   onOpenChange,
@@ -107,8 +97,14 @@ export function ChangePasswordDialog({
           </div>
 
           <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Salvar
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Salvando...
+              </>
+            ) : (
+              <>Salvar</>
+            )}
           </Button>
         </form>
       </DialogContent>

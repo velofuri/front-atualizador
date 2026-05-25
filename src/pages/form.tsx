@@ -27,7 +27,7 @@ import { useRegisterMutate, useUploadFileMutate } from "@/hooks/useMutate"
 const formSchema = z.object({
   acronym: z
     .string()
-    .min(1, "Sigla é obrigatória")
+    .min(3, "Sigla é obrigatória")
     .max(3, "Máximo 3 caracteres"),
   name: z.string().max(60, "Máximo 60 caracteres"),
   version: z
@@ -112,7 +112,7 @@ export default function FormPage() {
           >
             <Field>
               <FieldLabel htmlFor="sigla">Sigla</FieldLabel>
-              <Input id="sigla" {...register("acronym")} />
+              <Input id="sigla" maxLength={3} {...register("acronym")} />
               <FieldError>{errors.acronym?.message}</FieldError>
             </Field>
 

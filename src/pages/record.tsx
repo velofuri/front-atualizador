@@ -2,8 +2,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Loader2 } from "lucide-react"
-import { PaginationControls } from "@/components/pagination"
-import RecordsDataTable from "@/components/recordsDatatable"
+import { PaginationControls } from "@/components/records/pagination"
+import RecordsDataTable from "@/components/records/recordsDatatable"
 import { useGetRecords } from "@/hooks/useData"
 
 export default function RecordsPage() {

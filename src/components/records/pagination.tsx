@@ -13,7 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select"
+} from "../ui/select"
 
 type PaginationProps = {
   page: number
@@ -71,7 +71,6 @@ export function PaginationControls({
               />
             </PaginationItem>
 
-            {/* Renderização Dinâmica dos Números das Páginas */}
             {Array.from({ length: totalPages }).map((_, index) => {
               const pageNumber = index + 1
 

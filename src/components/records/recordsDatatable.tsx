@@ -1,9 +1,9 @@
 import type { RecordsType } from "@/types/records"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "./datatable"
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 import { ArrowUpDown } from "lucide-react"
-import { Badge } from "./ui/badge"
+import { Badge } from "../ui/badge"
 
 const statusConfig = {
   CONCLUIDO: {
@@ -28,9 +28,9 @@ const statusConfig = {
   },
 } as const
 
-export const columns: ColumnDef<RecordsType>[] = [
+const columns: ColumnDef<RecordsType>[] = [
   {
-    accessorKey: "sigla",
+    accessorKey: "acronym",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -48,7 +48,7 @@ export const columns: ColumnDef<RecordsType>[] = [
     ),
   },
   {
-    accessorKey: "nome",
+    accessorKey: "name",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -64,7 +64,7 @@ export const columns: ColumnDef<RecordsType>[] = [
     ),
   },
   {
-    accessorKey: "versao",
+    accessorKey: "version",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -109,7 +109,7 @@ export const columns: ColumnDef<RecordsType>[] = [
     },
   },
   {
-    accessorKey: "observacao",
+    accessorKey: "note",
     header: "Obs",
     cell: ({ row: { original } }) => (
       <div className="max-w-72 truncate text-sm text-foreground">
@@ -167,9 +167,9 @@ export const columns: ColumnDef<RecordsType>[] = [
   },
 ]
 
-type Props = {
+type RecordsDataTableProps = {
   records: RecordsType[]
 }
-export default function RecordsDataTable({ records }: Props) {
+export default function RecordsDataTable({ records }: RecordsDataTableProps) {
   return <DataTable columns={columns} data={records} />
 }

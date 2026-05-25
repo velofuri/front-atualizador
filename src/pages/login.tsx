@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/loginForm"
+import { LoginForm } from "@/components/login/loginForm"
 import { useAuthenticated } from "@/hooks/useData"
 import { useLoginMutate } from "@/hooks/useMutate"
 import { Loader } from "lucide-react"
