@@ -4,6 +4,7 @@ import { DataTable } from "./datatable"
 import { Button } from "../ui/button"
 import { ArrowUpDown } from "lucide-react"
 import { Badge } from "../ui/badge"
+import { capitalize } from "@/lib/captalize"
 
 const statusConfig = {
   CONCLUIDO: {
@@ -161,7 +162,7 @@ const columns: ColumnDef<RecordsType>[] = [
     header: "Criado Por",
     cell: ({ row: { original } }) => (
       <div className="max-w-72 truncate text-sm text-muted-foreground">
-        {original.createdBy.name.split(" ")[0]}
+        {capitalize(original.createdBy.name.split(" ")[0])}
       </div>
     ),
   },
