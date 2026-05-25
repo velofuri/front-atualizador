@@ -43,7 +43,7 @@ export const columns: ColumnDef<RecordsType>[] = [
     ),
     cell: ({ row: { original } }) => (
       <div className="font-mono font-medium tracking-wider text-muted-foreground uppercase">
-        {original.sigla}
+        {original.acronym}
       </div>
     ),
   },
@@ -60,7 +60,7 @@ export const columns: ColumnDef<RecordsType>[] = [
       </Button>
     ),
     cell: ({ row: { original } }) => (
-      <div className="max-w-52 truncate font-medium">{original.nome}</div>
+      <div className="max-w-52 truncate font-medium">{original.name}</div>
     ),
   },
   {
@@ -77,7 +77,7 @@ export const columns: ColumnDef<RecordsType>[] = [
     ),
     cell: ({ row: { original } }) => (
       <div className="w-fit rounded border bg-muted px-2 py-0.5 font-mono text-xs">
-        v{original.versao}
+        v{original.version}
       </div>
     ),
   },
@@ -94,7 +94,6 @@ export const columns: ColumnDef<RecordsType>[] = [
       </Button>
     ),
     cell: ({ row: { original } }) => {
-      // Evita quebras se o status vindo do banco não existir no objeto de configuração
       const status = original.status as keyof typeof statusConfig
       const config = statusConfig[status]
 
@@ -113,8 +112,8 @@ export const columns: ColumnDef<RecordsType>[] = [
     accessorKey: "observacao",
     header: "Obs",
     cell: ({ row: { original } }) => (
-      <div className="max-w-72 truncate text-sm text-muted-foreground">
-        {original.observacao || (
+      <div className="max-w-72 truncate text-sm text-foreground">
+        {original.note || (
           <span className="text-muted-foreground/40 italic">
             Sem observações
           </span>
@@ -156,6 +155,15 @@ export const columns: ColumnDef<RecordsType>[] = [
         </div>
       )
     },
+  },
+  {
+    accessorKey: "createdBy",
+    header: "Criado Por",
+    cell: ({ row: { original } }) => (
+      <div className="max-w-72 truncate text-sm text-muted-foreground">
+        {original.createdBy.name.split(" ")[0]}
+      </div>
+    ),
   },
 ]
 

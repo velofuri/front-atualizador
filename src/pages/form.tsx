@@ -25,16 +25,15 @@ import { useFileListData } from "@/hooks/useData"
 import { useRegisterMutate, useUploadFileMutate } from "@/hooks/useMutate"
 
 const formSchema = z.object({
-  sigla: z.string().min(1, "Sigla é obrigatória").max(3, "Máximo 3 caracteres"),
-  nome: z.string().max(60, "Máximo 60 caracteres"),
-  versao: z
+  acronym: z
+    .string()
+    .min(1, "Sigla é obrigatória")
+    .max(3, "Máximo 3 caracteres"),
+  name: z.string().max(60, "Máximo 60 caracteres"),
+  version: z
     .string()
     .min(10, "Informe versão com 10 caracteres")
     .max(10, "Informe versão com 10 caracteres"),
-  datahora: z
-    .string()
-    .min(1, "Data e hora são obrigatórias")
-    .refine((value) => !Number.isNaN(Date.parse(value)), "Data/hora inválida"),
 })
 
 export type FormValues = z.infer<typeof formSchema>
@@ -56,10 +55,9 @@ export default function FormPage() {
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      sigla: "",
-      nome: "",
-      versao: "",
-      datahora: new Date().toISOString().slice(0, 16),
+      acronym: "",
+      name: "",
+      version: "",
     },
   })
 
@@ -69,8 +67,8 @@ export default function FormPage() {
         reset()
         toast.success("Registro salvo com sucesso!")
       },
-      onError: () => {
-        toast.error("Falho ao registrar")
+      onError: (error) => {
+        toast.error(error.message)
       },
     })
   }
@@ -91,15 +89,15 @@ export default function FormPage() {
         }
         toast.success("Arquivo enviado com sucesso.")
       },
-      onError: () => {
-        toast.error("Erro ao enviar arquivo")
+      onError: (error) => {
+        toast.error(error.message)
       },
     })
   }
 
   return (
-    <div className="flex justify-center gap-2 p-6">
-      <Card className="min-w-2xs">
+    <div className="flex justify-center gap-2 p-6 select-none">
+      <Card className="min-w-3xs">
         <CardHeader>
           <CardTitle>Registrar</CardTitle>
           <CardDescription>
@@ -114,20 +112,20 @@ export default function FormPage() {
           >
             <Field>
               <FieldLabel htmlFor="sigla">Sigla</FieldLabel>
-              <Input id="sigla" {...register("sigla")} />
-              <FieldError>{errors.sigla?.message}</FieldError>
+              <Input id="sigla" {...register("acronym")} />
+              <FieldError>{errors.acronym?.message}</FieldError>
             </Field>
 
             <Field>
               <FieldLabel htmlFor="nome">Nome</FieldLabel>
-              <Input id="nome" {...register("nome")} />
-              <FieldError>{errors.nome?.message}</FieldError>
+              <Input id="nome" {...register("name")} />
+              <FieldError>{errors.name?.message}</FieldError>
             </Field>
 
             <Field>
               <FieldLabel htmlFor="versao">Versão</FieldLabel>
               <Controller
-                name="versao"
+                name="version"
                 control={control}
                 render={({ field }) => (
                   <Select onValueChange={field.onChange} value={field.value}>
@@ -146,18 +144,8 @@ export default function FormPage() {
                 )}
               />
 
-              <FieldError>{errors.versao?.message}</FieldError>
+              <FieldError>{errors.version?.message}</FieldError>
             </Field>
-
-            {/* <Field>
-              <FieldLabel htmlFor="datahora">Data e Hora</FieldLabel>
-              <Input
-                id="datahora"
-                type="datetime-local"
-                {...register("datahora")}
-              />
-              <FieldError>{errors.datahora?.message}</FieldError>
-            </Field> */}
 
             <Button type="submit" className="w-full">
               {loading ? (

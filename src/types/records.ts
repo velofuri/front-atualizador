@@ -6,12 +6,13 @@ export type FetchRecords = {
 
 export type RecordsType = {
   id: string
-  sigla: string
-  nome: string
-  versao: string
+  acronym: string
+  name: string
+  version: string
   status: "PENDENTE" | "CONCLUIDO" | "ERRO" | "PROCESSANDO"
   createdAt: string
-  observacao: string
+  note: string
+  createdBy: { name: string }
 }
 
 export type ApiResponse = {

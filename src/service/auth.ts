@@ -3,13 +3,13 @@ import { env } from "@/lib/env"
 const API_URL = env.VITE_API_URL
 const AUTH_KEY = "isAuthenticated"
 
-export async function login(user: string, password: string) {
+export async function login(email: string, password: string) {
   const response = await fetch(`${API_URL}/auth`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ user, password }),
+    body: JSON.stringify({ email, password }),
     credentials: "include",
   })
 
@@ -41,7 +41,26 @@ export async function isAuthenticated() {
   })
 
   if (!response.ok) {
-    return false
+    return null
   }
-  return true
+  const result = await response.json()
+  return result
+}
+
+export async function changePassword(password: string) {
+  const response = await fetch(`${API_URL}/auth/changepass`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password }),
+    credentials: "include",
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null)
+    throw new Error(error?.message || "Erro ao redefinir senha")
+  }
+
+  return response
 }

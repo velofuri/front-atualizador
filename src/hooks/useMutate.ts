@@ -1,6 +1,6 @@
 import { queryClient } from "@/lib/reactQuery"
 import { createRecord, uploadArquivo } from "@/service/api"
-import { login, logout } from "@/service/auth"
+import { changePassword, login, logout } from "@/service/auth"
 import { useMutation } from "@tanstack/react-query"
 
 export function useRegisterMutate() {
@@ -37,6 +37,18 @@ export function useLoginMutate() {
 export function useLogoutMutate() {
   return useMutation({
     mutationFn: logout,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["authenticated"],
+      })
+    },
+  })
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: ({ password }: { password: string }) =>
+      changePassword(password),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["authenticated"],

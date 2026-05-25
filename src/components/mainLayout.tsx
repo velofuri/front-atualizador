@@ -6,7 +6,6 @@ const MainLayout = () => {
     <div>
       <Header />
       <main style={{ padding: "20px" }}>
-        {/* É aqui que as páginas (rotas filhas) vão aparecer */}
         <Outlet />
       </main>
     </div>
