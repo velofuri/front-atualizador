@@ -11,6 +11,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "../ui/button"
 import { ChangePasswordDialog } from "./changePassword"
+import { capitalize } from "@/lib/captalize"
 
 export function HeaderDropDown() {
   const { data } = useAuthenticated()
@@ -26,7 +27,7 @@ export function HeaderDropDown() {
             <DropdownMenuTrigger asChild>
               <button className="cursor-pointer">
                 <strong className="text-xl font-semibold text-foreground">
-                  {data.name.split(" ")[0]}
+                  {capitalize(data.name.split(" ")[0])}
                 </strong>
               </button>
             </DropdownMenuTrigger>
