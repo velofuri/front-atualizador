@@ -45,6 +45,9 @@ export function useLogoutMutate() {
       })
       navigate("/login")
     },
+    onError: () => {
+      navigate("/login")
+    },
   })
 }
 
