@@ -27,5 +27,6 @@ export function useAuthenticated() {
     queryKey: ["authenticated"],
     queryFn: isAuthenticated,
     staleTime: 1000 * 60 * 5, // 5 minutos
+    retry: false,
   })
 }

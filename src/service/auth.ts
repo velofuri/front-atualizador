@@ -41,7 +41,7 @@ export async function isAuthenticated() {
   })
 
   if (!response.ok) {
-    return null
+    throw new Error("Não autorizado")
   }
   const result = await response.json()
   return result
